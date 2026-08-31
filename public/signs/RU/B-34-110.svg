@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="B-34 100">
-  <title>B-34 100</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="B-34 110">
+  <title>B-34 110</title>
   <rect x="12" y="12" width="216" height="216" rx="18" fill="#fff" stroke="#111" stroke-width="8"/>
   <g fill="none" stroke="#111" stroke-width="14" stroke-linecap="round">
     <line x1="52" y1="52" x2="188" y2="188"/>
     <line x1="188" y1="52" x2="52" y2="188"/>
   </g>
-  <text x="120" y="162" text-anchor="middle" font-size="54" font-family="Arial, Helvetica, sans-serif" font-weight="700" fill="#111">100</text>
+  <text x="120" y="162" text-anchor="middle" font-size="54" font-family="Arial, Helvetica, sans-serif" font-weight="700" fill="#111">110</text>
 </svg>
