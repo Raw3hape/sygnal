@@ -1,0 +1,54 @@
+name: Assemble package-lock
+on:
+  push:
+    branches: [main]
+    paths:
+      - "_lock/**"
+      - ".github/workflows/assemble-lock.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode and verify package-lock.json
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, base64, gzip, hashlib
+
+          EXPECTED = "1a109300899f945705813588e498668e1d1d526b866261f7ca3fc2f201efc22a"
+
+          def load_part(p: Path) -> str:
+              text = p.read_text()
+              fix = p.with_suffix(".fix.json")
+              if fix.exists():
+                  for item in json.loads(fix.read_text()):
+                      i, c = item["i"], item["c"]
+                      text = text[:i] + c + text[i + 1 :]
+              return text.strip()
+
+          parts = sorted(Path("_lock").glob("*.b64"))
+          if not parts:
+              raise SystemExit("no _lock/*.b64 fragments found")
+          b64 = "".join(load_part(p) for p in parts)
+          data = gzip.decompress(base64.b64decode(b64))
+          digest = hashlib.sha256(data).hexdigest()
+          if digest != EXPECTED:
+              raise SystemExit(f"sha256 mismatch: {digest} != {EXPECTED}")
+          Path("package-lock.json").write_bytes(data)
+          print("wrote", len(data), "bytes", digest, "from", [p.name for p in parts])
+          PY
+      - name: Commit package-lock.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "package-lock.json unchanged"
+          else
+            git commit -m "Add package-lock.json"
+            git push
+          fi
