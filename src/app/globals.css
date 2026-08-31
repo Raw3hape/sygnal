@@ -71,6 +71,15 @@ a {
   color: var(--ink);
 }
 
+.shell-immersive {
+  padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+}
+
+.shell-immersive .lesson-cta,
+.shell-immersive .exam-cta {
+  bottom: 0.35rem;
+}
+
 .theme-play {
   --paper: #10241c;
   --paper-2: #1b3a2e;
@@ -454,6 +463,14 @@ a {
 .btn-signal:active {
   transform: translateY(4px);
   box-shadow: 0 2px 0 var(--signal-deep);
+}
+
+.btn-signal:disabled,
+.btn-signal:disabled:active {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+  box-shadow: 0 3px 0 var(--signal-deep);
 }
 
 .btn-ink {
