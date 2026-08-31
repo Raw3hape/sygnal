@@ -21,6 +21,7 @@ import { addXp } from "@/lib/xp";
 import { useProgress } from "@/lib/useProgress";
 import { SignSvg } from "./SignSvg";
 import { HintToggle, TeachPanel } from "./TeachPanel";
+import { Mascot } from "./Mascot";
 
 const IntersectionSceneView = dynamic(
   () => import("./scene3d/IntersectionSceneView").then((mod) => mod.IntersectionSceneView),
@@ -229,17 +230,18 @@ export function LessonPlayer({ lesson, locale }: LessonPlayerProps) {
     const gained = addXp(0, { correct: correctCount, total });
     return (
       <div className="finish-card">
+        <Mascot pose="celebrate" size="lg" alt={t("mascot.celebrate")} />
         <p className="teach-kicker">{t("lessonDone")}</p>
         <h1 className="display">{t("lessonDone")}</h1>
         <p className="lede">
           +{gained} {t("xp")}
         </p>
         {followUp ? (
-          <Link href={`/lesson/${followUp.id}`} className="btn-signal">
+          <Link href={`/lesson/${followUp.id}`} className="btn-signal btn-hero">
             {t("another")} {lessonHas3d(followUp) ? `· ${t("threeD")}` : ""}
           </Link>
         ) : (
-          <Link href="/learn" className="btn-signal">
+          <Link href="/learn" className="btn-signal btn-hero">
             {t("learn")}
           </Link>
         )}
@@ -252,6 +254,11 @@ export function LessonPlayer({ lesson, locale }: LessonPlayerProps) {
 
   return (
     <div className="stack-lg">
+      {feedback === null ? (
+        <div className="lesson-companion">
+          <Mascot pose={hintOpen ? "think" : "idle"} size="sm" alt={hintOpen ? t("mascot.think") : t("mascot.idle")} />
+        </div>
+      ) : null}
       <div className="progress-track" aria-hidden="true">
         <div className="progress-fill" style={{ width: `${visualProgress}%` }} />
       </div>
@@ -280,37 +287,39 @@ export function LessonPlayer({ lesson, locale }: LessonPlayerProps) {
           answerIndex={answerIndex}
         />
       ) : null}
-      <button
-        type="button"
-        className="btn-ink"
-        onClick={() => {
-          const result = gradeItem(item, answer, lesson.jurisdiction);
-          if (feedback === null) {
-            setFeedback(result.correct);
-            if (result.correct) {
-              setCorrectCount((count) => count + 1);
+      <div className="lesson-cta">
+        <button
+          type="button"
+          className="btn-signal btn-hero"
+          onClick={() => {
+            const result = gradeItem(item, answer, lesson.jurisdiction);
+            if (feedback === null) {
+              setFeedback(result.correct);
+              if (result.correct) {
+                setCorrectCount((count) => count + 1);
+              }
+              const existing = cards[item.id] ? deserializeCard(cards[item.id]!) : createEmptyCard();
+              const nextCard = reviewCard(existing, ratingFromCorrect(result.correct));
+              saveCard(item.id, serializeCard(nextCard));
+              return;
             }
-            const existing = cards[item.id] ? deserializeCard(cards[item.id]!) : createEmptyCard();
-            const nextCard = reviewCard(existing, ratingFromCorrect(result.correct));
-            saveCard(item.id, serializeCard(nextCard));
-            return;
-          }
-          const last = index + 1 >= total;
-          if (last) {
-            const gained = addXp(0, { correct: correctCount, total });
-            addStoredXp(gained);
-            completeLesson(lesson.skillId, lesson.id, signIds);
+            const last = index + 1 >= total;
+            if (last) {
+              const gained = addXp(0, { correct: correctCount, total });
+              addStoredXp(gained);
+              completeLesson(lesson.skillId, lesson.id, signIds);
+              setIndex(index + 1);
+              return;
+            }
             setIndex(index + 1);
-            return;
-          }
-          setIndex(index + 1);
-          setAnswer(null);
-          setFeedback(null);
-          setHintOpen(false);
-        }}
+            setAnswer(null);
+            setFeedback(null);
+            setHintOpen(false);
+          }}
       >
         {feedback === null ? t("check") : index + 1 >= total ? t("finish") : t("next")}
       </button>
+      </div>
     </div>
   );
 }

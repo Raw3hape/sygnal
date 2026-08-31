@@ -12,6 +12,7 @@ import { localeText } from "@/lib/localeText";
 import { useQuality } from "@/lib/useQuality";
 import { SignSvg } from "./SignSvg";
 import { HintToggle, TeachPanel } from "./TeachPanel";
+import { Mascot } from "./Mascot";
 
 const IntersectionSceneView = dynamic(
   () => import("./scene3d/IntersectionSceneView").then((mod) => mod.IntersectionSceneView),
@@ -43,6 +44,7 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
     const passed = scored >= marks.pass;
     return (
       <div className="finish-card">
+        <Mascot pose={passed ? "celebrate" : "oops"} size="lg" alt={passed ? t("mascot.celebrate") : t("mascot.oops")} />
         <p className="teach-kicker">{passed ? t("pass") : t("fail")}</p>
         <h1 className="display">{passed ? t("pass") : t("fail")}</h1>
         <p className="lede">
@@ -64,7 +66,7 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
         </ol>
         <button
           type="button"
-          className="btn-signal"
+          className="btn-signal btn-hero"
           onClick={() => {
             setAnswers(questions.map(() => null));
             setIndex(0);
@@ -90,6 +92,7 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
 
   return (
     <div className="stack">
+      <Mascot pose="think" size="sm" alt={t("mascot.think")} />
       <p className="exam-meter">
         {index + 1} / {questions.length} · {question.points} pkt
       </p>
@@ -103,6 +106,7 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
       {pedagogy ? (
         <HintToggle pedagogy={pedagogy} locale={locale} open={hintOpen} onToggle={() => setHintOpen((value) => !value)} />
       ) : null}
+      <div className="exam-cta">
       {question.kind === "yes-no" ? (
         <div className="choice-grid choice-grid-2">
           <button type="button" className="choice" onClick={() => commit(true)}>
@@ -126,6 +130,7 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
