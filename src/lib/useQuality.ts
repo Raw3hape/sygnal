@@ -1,5 +1,3 @@
-"use client";
-
 import { detectQuality, type QualityTier } from "@/lib/quality";
 import { useProgress } from "@/lib/useProgress";
 
