@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import {
   bumpDrivingDays,
   defaultProgress,
-  namespaceLegacySkills,
+  hydratePersistedProgress,
   skillProgressKey,
   type AttentionMode,
   type ProgressState,
@@ -68,17 +68,8 @@ export const useProgress = create<ProgressStore>()(
     }),
     {
       name: "sygnal-progress",
-      version: 1,
-      migrate: (persisted, version) => {
-        const state = persisted as ProgressState;
-        if (version >= 1) {
-          return state;
-        }
-        return {
-          ...state,
-          skills: namespaceLegacySkills(state.skills ?? {}, state.jurisdictionId ?? "PL"),
-        };
-      },
+      version: 2,
+      migrate: (persisted) => hydratePersistedProgress(persisted as ProgressState),
     },
   ),
 );

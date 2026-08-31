@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   completedSkillsFor,
+  defaultProgress,
+  hydratePersistedProgress,
   namespaceLegacySkills,
   skillProgressFor,
   skillProgressKey,
@@ -45,5 +47,29 @@ describe("skill progress namespacing", () => {
     );
     expect(migrated["US-CA::warning-signs"]?.completedLessonIds).toEqual(["x"]);
     expect(migrated["warning-signs"]).toBeUndefined();
+  });
+
+  it("drops leftover bare keys once any namespaced skill exists", () => {
+    const migrated = namespaceLegacySkills(
+      {
+        "PL::warning-signs": { completedLessonIds: ["pl"], crowns: 1 },
+        "warning-signs": { completedLessonIds: ["legacy"], crowns: 2 },
+      },
+      "US-CA",
+    );
+    expect(migrated["PL::warning-signs"]?.completedLessonIds).toEqual(["pl"]);
+    expect(migrated["US-CA::warning-signs"]).toBeUndefined();
+    expect(migrated["warning-signs"]).toBeUndefined();
+  });
+
+  it("keeps XP when rehydrating a version-1 persist blob", () => {
+    const next = hydratePersistedProgress({
+      ...defaultProgress("PL"),
+      xp: 120,
+      skills: { "warning-signs": { completedLessonIds: ["x"], crowns: 1 } },
+    });
+    expect(next.xp).toBe(120);
+    expect(next.skills["PL::warning-signs"]?.crowns).toBe(1);
+    expect(next.skills["warning-signs"]).toBeUndefined();
   });
 });

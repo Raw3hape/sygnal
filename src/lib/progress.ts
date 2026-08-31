@@ -117,9 +117,25 @@ export function namespaceLegacySkills(
 ): Record<string, SkillProgress> {
   const next: Record<string, SkillProgress> = {};
   for (const [key, value] of Object.entries(skills)) {
-    next[key.includes("::") ? key : skillProgressKey(jurisdictionId, key)] = value;
+    if (key.includes("::")) {
+      next[key] = value;
+    }
+  }
+  if (Object.keys(next).length > 0) {
+    return next;
+  }
+  for (const [key, value] of Object.entries(skills)) {
+    next[skillProgressKey(jurisdictionId, key)] = value;
   }
   return next;
+}
+
+export function hydratePersistedProgress(state: ProgressState): ProgressState {
+  return {
+    ...state,
+    xp: typeof state.xp === "number" ? state.xp : 0,
+    skills: namespaceLegacySkills(state.skills ?? {}, state.jurisdictionId ?? "PL"),
+  };
 }
 
 export function skillProgressFor(
