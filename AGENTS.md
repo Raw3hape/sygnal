@@ -86,7 +86,7 @@ Exam **abc** items that include a `sceneId` are still multiple-choice with a can
 
 ## State
 
-Zustand + persist, store name **`sygnal-progress`** (`src/lib/useProgress.ts`). Shape: `src/lib/progress.ts` (`jurisdictionId`, `attentionMode`, `qualityOverride`, `xp`, `collectedSignIds`, `skills`, `cards`, `drivingDays`, `onboardingComplete`).
+Zustand + persist, store name **`sygnal-progress`** (`src/lib/useProgress.ts`). Shape: `src/lib/progress.ts` (`jurisdictionId`, `attentionMode`, `qualityOverride`, `xp`, `collectedSignIds`, `skills` keyed as `{jurisdictionId}::{skillId}`, `cards`, `drivingDays`, `onboardingComplete`).
 
 E2E seeds this key via `e2e/helpers.ts` (`persistPayload` / `gotoSeeded`). Keep the persist name and `state` wrapper stable or update helpers.
 
