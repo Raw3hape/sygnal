@@ -1,14 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo } from "react";
+import { NavIcon, type NavKey } from "@/components/glyphs";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { levelFromXp } from "@/lib/xp";
 import { useProgress } from "@/lib/useProgress";
 
 interface AppShellProps {
-  children: React.ReactNode;
+  children: ReactNode;
   locale: string;
+}
+
+function isTabOn(href: "/learn" | "/hub" | "/exam" | "/drive" | "/settings", pathname: string): boolean {
+  if (pathname === href || pathname.startsWith(`${href}/`)) {
+    return true;
+  }
+  return href === "/learn" && pathname.startsWith("/lesson");
 }
 
 export function AppShell({ children, locale }: AppShellProps) {
@@ -38,13 +46,13 @@ export function AppShell({ children, locale }: AppShellProps) {
     [],
   );
 
-  const nav = [
-    { href: "/learn", label: t("learn") },
-    { href: "/hub", label: t("hub") },
-    { href: "/exam", label: t("exam") },
-    { href: "/drive", label: t("drive") },
-    { href: "/settings", label: t("settings") },
-  ] as const;
+  const nav: ReadonlyArray<{ id: NavKey; href: "/learn" | "/hub" | "/exam" | "/drive" | "/settings"; label: string }> = [
+    { id: "learn", href: "/learn", label: t("learn") },
+    { id: "hub", href: "/hub", label: t("hub") },
+    { id: "exam", href: "/exam", label: t("exam") },
+    { id: "drive", href: "/drive", label: t("drive") },
+    { id: "settings", href: "/settings", label: t("settings") },
+  ];
 
   return (
     <div className={`${play ? "theme-play" : "theme-focus"} ${mode === "focus" ? "sygnal-focus" : ""} shell`}>
@@ -55,9 +63,11 @@ export function AppShell({ children, locale }: AppShellProps) {
           </Link>
           <div className="status-row">
             <span className="xp-pill">
+              <span aria-hidden="true">✦</span>
               {t("xp")} {xp} · {level}
             </span>
             <span className="days-pill">
+              <span aria-hidden="true">◎</span>
               {t("days")} {days.paused ? "—" : days.count}
             </span>
             <button type="button" className="chip" onClick={() => setMode(play ? "focus" : "play")}>
@@ -67,19 +77,6 @@ export function AppShell({ children, locale }: AppShellProps) {
         </div>
       </header>
       <main className="canvas">{children}</main>
-      <nav className="tabbar">
-        <div className="tabbar-inner">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              className={`tab ${pathname === item.href || pathname.startsWith(`${item.href}/`) ? "tab-on" : ""}`}
-              href={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
       <footer className="colophon">
         <p>{t("disclaimer")}</p>
         <div className="chip-row chip-row-center">
@@ -98,6 +95,20 @@ export function AppShell({ children, locale }: AppShellProps) {
           </button>
         </div>
       </footer>
+      <nav className="tabbar">
+        <div className="tabbar-inner">
+          {nav.map((item) => (
+            <Link
+              key={item.href}
+              className={`tab ${isTabOn(item.href, pathname) ? "tab-on" : ""}`}
+              href={item.href}
+            >
+              <NavIcon name={item.id} />
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }
