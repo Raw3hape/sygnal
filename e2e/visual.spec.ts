@@ -17,7 +17,20 @@ const usCaSeeded = {
 
 async function beforeShot(page: Page): Promise<void> {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await Promise.all(
+      Array.from(document.images).map((image) => {
+        if (image.complete) {
+          return Promise.resolve();
+        }
+        return new Promise<void>((resolve) => {
+          image.addEventListener("load", () => resolve(), { once: true });
+          image.addEventListener("error", () => resolve(), { once: true });
+        });
+      }),
+    );
+  });
 }
 
 test.beforeEach(async ({ page }) => {

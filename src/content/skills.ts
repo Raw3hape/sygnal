@@ -1,8 +1,25 @@
 import type { JurisdictionId } from "@/engine/types";
+import { assertNever } from "@/engine/geometry";
+
+export const SKILL_IDS = [
+  "warning-signs",
+  "prohibitory-signs",
+  "priority-signs",
+  "uncontrolled",
+  "lights",
+  "roundabout",
+  "people",
+  "special",
+  "highway",
+] as const;
+
+export type SkillId = (typeof SKILL_IDS)[number];
+
+export type PathNodeStatus = "ready" | "locked" | "done";
 
 export interface SkillNode {
-  id: string;
-  prerequisiteIds: string[];
+  id: SkillId;
+  prerequisiteIds: SkillId[];
   signCategories?: Array<"warning" | "prohibitory" | "mandatory" | "priority" | "information">;
   sceneIds: string[];
   examWeight: 1 | 2 | 3;
@@ -80,4 +97,31 @@ export function isUnlocked(
   completed: Record<string, boolean>,
 ): boolean {
   return skill.prerequisiteIds.every((id) => completed[id]);
+}
+
+export function pathNodeStatus(
+  unlocked: boolean,
+  completedLessons: number,
+  totalLessons: number,
+): PathNodeStatus {
+  if (!unlocked) {
+    return "locked";
+  }
+  if (totalLessons > 0 && completedLessons >= totalLessons) {
+    return "done";
+  }
+  return "ready";
+}
+
+export function pathStatusLabelKey(status: PathNodeStatus): "unlocked" | "locked" | "skillDone" {
+  switch (status) {
+    case "ready":
+      return "unlocked";
+    case "locked":
+      return "locked";
+    case "done":
+      return "skillDone";
+    default:
+      return assertNever(status);
+  }
 }
