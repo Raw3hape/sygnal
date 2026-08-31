@@ -2,11 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
+import { lessonsFor } from "@/content/lessons";
 import { isUnlocked, skillsFor } from "@/content/skills";
 import { useRouter } from "@/i18n/navigation";
-import { useQuality } from "@/lib/useQuality";
+import { completedSkillsFor } from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
-import { lessonsFor } from "@/content/lessons";
+import { useQuality } from "@/lib/useQuality";
 
 const HubWorld = dynamic(() => import("./scene3d/HubWorld").then((mod) => mod.HubWorld), { ssr: false });
 
@@ -16,10 +17,7 @@ export function HubClient() {
   const jurisdictionId = useProgress((state) => state.jurisdictionId);
   const skillsState = useProgress((state) => state.skills);
   const quality = useQuality();
-  const completed: Record<string, boolean> = {};
-  for (const [id, value] of Object.entries(skillsState)) {
-    completed[id] = value.completedLessonIds.length > 0;
-  }
+  const completed = completedSkillsFor(skillsState, jurisdictionId);
   const labels: Record<string, string> = {};
   for (const skill of skillsFor(jurisdictionId)) {
     labels[skill.id] = t(`skills.${skill.id}`);

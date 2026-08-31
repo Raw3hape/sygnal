@@ -29,6 +29,7 @@ export function AppShell({ children, locale }: AppShellProps) {
   const togglePause = useProgress((state) => state.togglePauseDays);
   const level = levelFromXp(xp);
   const play = mode === "play";
+  const immersive = pathname.startsWith("/lesson") || pathname.startsWith("/exam");
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -55,7 +56,7 @@ export function AppShell({ children, locale }: AppShellProps) {
   ];
 
   return (
-    <div className={`${play ? "theme-play" : "theme-focus"} ${mode === "focus" ? "sygnal-focus" : ""} shell`}>
+    <div className={`${play ? "theme-play" : "theme-focus"} ${mode === "focus" ? "sygnal-focus" : ""} shell ${immersive ? "shell-immersive" : ""}`}>
       <header className="topbar">
         <div className="topbar-inner">
           <Link href="/" className="wordmark">
@@ -83,7 +84,7 @@ export function AppShell({ children, locale }: AppShellProps) {
           {locales.map((item) => (
             <Link
               key={item.id}
-              href="/"
+              href={pathname || "/"}
               locale={item.id}
               className={`chip ${item.id === locale ? "chip-on" : ""}`}
             >
@@ -95,20 +96,22 @@ export function AppShell({ children, locale }: AppShellProps) {
           </button>
         </div>
       </footer>
-      <nav className="tabbar">
-        <div className="tabbar-inner">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              className={`tab ${isTabOn(item.href, pathname) ? "tab-on" : ""}`}
-              href={item.href}
-            >
-              <NavIcon name={item.id} />
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </nav>
+      {immersive ? null : (
+        <nav className="tabbar">
+          <div className="tabbar-inner">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                className={`tab ${isTabOn(item.href, pathname) ? "tab-on" : ""}`}
+                href={item.href}
+              >
+                <NavIcon name={item.id} />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }

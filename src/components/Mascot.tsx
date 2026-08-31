@@ -35,6 +35,17 @@ export function Mascot({
   return (
     // Generated original traffic-light bird; next/image not required for static public mascots.
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={mascotSrc(pose)} alt={alt} className={classes} draggable={false} />
+    <img
+      src={mascotSrc(pose)}
+      alt={alt}
+      className={classes}
+      draggable={false}
+      onError={(event) => {
+        if (event.currentTarget.getAttribute("src") === "/icon.svg") {
+          return;
+        }
+        event.currentTarget.src = "/icon.svg";
+      }}
+    />
   );
 }

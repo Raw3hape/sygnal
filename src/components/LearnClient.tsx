@@ -5,7 +5,7 @@ import { CheckGlyph, LockGlyph, SkillGlyph } from "@/components/glyphs";
 import { lessonHas3d, lessonsFor } from "@/content/lessons";
 import { isUnlocked, pathNodeStatus, pathStatusLabelKey, skillsFor, type PathNodeStatus } from "@/content/skills";
 import { Link } from "@/i18n/navigation";
-import { todayIso } from "@/lib/progress";
+import { completedSkillsFor, skillProgressFor, todayIso } from "@/lib/progress";
 import { useProgress } from "@/lib/useProgress";
 
 function ribbonPath(count: number): string {
@@ -37,15 +37,12 @@ export function LearnClient() {
   const jurisdictionId = useProgress((state) => state.jurisdictionId);
   const skillsState = useProgress((state) => state.skills);
   const drivingDays = useProgress((state) => state.drivingDays);
-  const completed: Record<string, boolean> = {};
-  for (const [skillId, value] of Object.entries(skillsState)) {
-    completed[skillId] = value.completedLessonIds.length > 0;
-  }
+  const completed = completedSkillsFor(skillsState, jurisdictionId);
   const skills = skillsFor(jurisdictionId);
   const practicedToday = drivingDays.lastIsoDate === todayIso();
   const currentSkillId = skills.find((skill) => {
     const lessons = lessonsFor(jurisdictionId, skill.id);
-    const progress = skillsState[skill.id];
+    const progress = skillProgressFor(skillsState, jurisdictionId, skill.id);
     const status = pathNodeStatus(
       isUnlocked(skill, completed),
       progress?.completedLessonIds.length ?? 0,
@@ -76,7 +73,7 @@ export function LearnClient() {
         <ol className="skill-path">
           {skills.map((skill, index) => {
             const lessons = lessonsFor(jurisdictionId, skill.id);
-            const progress = skillsState[skill.id];
+            const progress = skillProgressFor(skillsState, jurisdictionId, skill.id);
             const completedCount = progress?.completedLessonIds.length ?? 0;
             const crowns = progress?.crowns ?? 0;
             const status: PathNodeStatus = pathNodeStatus(isUnlocked(skill, completed), completedCount, lessons.length);
