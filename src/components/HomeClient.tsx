@@ -3,14 +3,16 @@
 import { useTranslations } from "next-intl";
 import { JURISDICTIONS } from "@/content/jurisdictions";
 import { Mascot } from "@/components/Mascot";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useProgress } from "@/lib/useProgress";
 
 export function HomeClient() {
   const t = useTranslations();
+  const pathname = usePathname();
   const complete = useProgress((state) => state.onboardingComplete);
   const completeOnboarding = useProgress((state) => state.completeOnboarding);
   const jurisdictionId = useProgress((state) => state.jurisdictionId);
+  const languageHref = pathname || "/";
 
   if (!complete) {
     return (
@@ -21,13 +23,13 @@ export function HomeClient() {
         <p className="lede">{t("onboardingBody")}</p>
         <p className="eyebrow">{t("language")}</p>
         <div className="chip-row chip-row-center">
-          <Link href="/" locale="en" className="chip">
+          <Link href={languageHref} locale="en" className="chip">
             EN
           </Link>
-          <Link href="/" locale="pl" className="chip">
+          <Link href={languageHref} locale="pl" className="chip">
             PL
           </Link>
-          <Link href="/" locale="ru" className="chip">
+          <Link href={languageHref} locale="ru" className="chip">
             RU
           </Link>
         </div>

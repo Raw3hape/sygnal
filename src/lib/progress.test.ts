@@ -29,6 +29,15 @@ describe("skill progress namespacing", () => {
     expect(skillProgressFor(skills, "PL", "warning-signs")?.crowns).toBe(1);
   });
 
+  it("does not let a Poland namespaced skill unlock California via a leftover bare key", () => {
+    const skills = {
+      "PL::warning-signs": { completedLessonIds: ["PL-warning-signs-0"], crowns: 1 },
+      "warning-signs": { completedLessonIds: ["legacy"], crowns: 2 },
+    };
+    expect(skillProgressFor(skills, "US-CA", "warning-signs")).toBeUndefined();
+    expect(completedSkillsFor(skills, "US-CA")["warning-signs"]).toBeUndefined();
+  });
+
   it("migrates legacy keys under the current jurisdiction", () => {
     const migrated = namespaceLegacySkills(
       { "warning-signs": { completedLessonIds: ["x"], crowns: 1 } },

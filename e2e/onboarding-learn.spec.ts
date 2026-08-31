@@ -24,6 +24,10 @@ test.describe("onboarding and learn", () => {
     await expect(page.getByRole("contentinfo")).toContainText(
       "does not replace a driving school or the official exam",
     );
+
+    await expect(page.getByRole("navigation")).toHaveCount(0);
+    await expect(page.locator(".xp-pill")).toHaveCount(0);
+    await expect(page.locator(".tabbar")).toHaveCount(0);
   });
 
   test("choosing Poland lands on the home hub", async ({ page }) => {
@@ -35,6 +39,8 @@ test.describe("onboarding and learn", () => {
     await expect(main.getByText("Poland", { exact: true })).toBeVisible();
     await expect(main.getByRole("link", { name: "Learn", exact: true })).toBeVisible();
     await expect(main.getByRole("link", { name: "3D town" })).toBeVisible();
+    await expect(page.getByRole("navigation")).toBeVisible();
+    await expect(page.locator(".xp-pill")).toBeVisible();
   });
 
   test("seeded learn path shows today's goal and unlocks warning signs", async ({

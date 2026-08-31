@@ -107,6 +107,10 @@ export function skillProgressKey(jurisdictionId: JurisdictionId, skillId: string
   return `${jurisdictionId}::${skillId}`;
 }
 
+function hasNamespacedSkills(skills: Record<string, SkillProgress>): boolean {
+  return Object.keys(skills).some((key) => key.includes("::"));
+}
+
 export function namespaceLegacySkills(
   skills: Record<string, SkillProgress>,
   jurisdictionId: JurisdictionId,
@@ -123,7 +127,14 @@ export function skillProgressFor(
   jurisdictionId: JurisdictionId,
   skillId: string,
 ): SkillProgress | undefined {
-  return skills[skillProgressKey(jurisdictionId, skillId)] ?? skills[skillId];
+  const namespaced = skills[skillProgressKey(jurisdictionId, skillId)];
+  if (namespaced) {
+    return namespaced;
+  }
+  if (hasNamespacedSkills(skills)) {
+    return undefined;
+  }
+  return skills[skillId];
 }
 
 export function completedSkillsFor(
@@ -132,14 +143,12 @@ export function completedSkillsFor(
 ): Record<string, boolean> {
   const prefix = `${jurisdictionId}::`;
   const completed: Record<string, boolean> = {};
-  let namespaced = false;
   for (const [key, value] of Object.entries(skills)) {
     if (key.startsWith(prefix)) {
-      namespaced = true;
       completed[key.slice(prefix.length)] = value.completedLessonIds.length > 0;
     }
   }
-  if (namespaced) {
+  if (hasNamespacedSkills(skills)) {
     return completed;
   }
   for (const [key, value] of Object.entries(skills)) {
