@@ -4,7 +4,8 @@ import dynamic from "next/dynamic";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { createEmptyCard } from "ts-fsrs";
-import { gradeItem } from "@/content/grade";
+import { actorCopyKey, isActorCopyId } from "@/content/actorLabels";
+import { gradeItem, hasLessonAnswer } from "@/content/grade";
 import { lessonHas3d, nextLessonAfter, type Lesson, type LessonItem } from "@/content/lessons";
 import { pedagogyForItem } from "@/content/pedagogy";
 import { getScene } from "@/content/scenes";
@@ -36,6 +37,13 @@ interface LessonPlayerProps {
 function reasonMessage(key: string, t: ReturnType<typeof useTranslations>): string {
   const nested = key.startsWith("reason.") ? key.slice("reason.".length) : key;
   return t(`reason.${nested}`);
+}
+
+function actorName(id: string, t: ReturnType<typeof useTranslations>): string {
+  if (isActorCopyId(id)) {
+    return t(actorCopyKey(id));
+  }
+  return id;
 }
 
 function ItemView({
@@ -154,6 +162,7 @@ function ItemView({
             selectedIds={item.type === "who-goes-first" ? selected : []}
             highlightId={item.type === "hazard-tap" ? (typeof answer === "string" ? answer : undefined) : firstId}
             correctOrder={reveal && item.type === "who-goes-first" ? ranking.order : undefined}
+            actorLabel={(id) => actorName(id, t)}
             onSelectActor={(id) => {
               if (item.type === "hazard-tap") {
                 setAnswer(id);
@@ -168,7 +177,7 @@ function ItemView({
           />
         </div>
         {item.type === "who-goes-first" ? (
-          <p className="order-line">{selected.join(" → ") || "—"}</p>
+          <p className="order-line">{selected.map((id) => actorName(id, t)).join(" → ") || "—"}</p>
         ) : null}
         {reveal ? (
           <ol className="reason-list">
@@ -176,7 +185,7 @@ function ItemView({
               const nested = (ranking.reasonKeys[id] ?? "reason.yieldToRight").replace(/^reason\./, "");
               return (
                 <li key={id}>
-                  <span className="mono">{id}</span>
+                  <span className="mono">{actorName(id, t)}</span>
                   {" — "}
                   {t(`reasonDetail.${nested}`)}
                 </li>
@@ -291,6 +300,7 @@ export function LessonPlayer({ lesson, locale }: LessonPlayerProps) {
         <button
           type="button"
           className="btn-signal btn-hero"
+          disabled={feedback === null && !hasLessonAnswer(item, answer)}
           onClick={() => {
             const result = gradeItem(item, answer, lesson.jurisdiction);
             if (feedback === null) {

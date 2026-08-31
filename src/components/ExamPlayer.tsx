@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { actorCopyKey, isActorCopyId } from "@/content/actorLabels";
 import { buildExam, examPassMark, scoreExam } from "@/content/exam";
 import { pedagogyForExam } from "@/content/pedagogy";
 import { getScene } from "@/content/scenes";
@@ -99,7 +100,11 @@ export function ExamPlayer({ jurisdiction }: { jurisdiction: JurisdictionId }) {
       {sign ? <SignSvg sign={sign} className="sign-hero" /> : null}
       {scene ? (
         <div className="scene-frame">
-          <IntersectionSceneView scene={scene} quality={quality} />
+          <IntersectionSceneView
+            scene={scene}
+            quality={quality}
+            actorLabel={(id) => (isActorCopyId(id) ? t(actorCopyKey(id)) : id)}
+          />
         </div>
       ) : null}
       <p className="prompt">{localeText(question.prompt, locale)}</p>
