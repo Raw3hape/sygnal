@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { PublicArt } from "@/components/PublicArt";
 import { JURISDICTIONS } from "@/content/jurisdictions";
 import { listSigns } from "@/content/signs";
 import type { QualityPreference } from "@/lib/quality";
@@ -95,8 +96,11 @@ export function SettingsClient() {
       <h2 className="section-title">{t("collection")}</h2>
       {signs.length === 0 ? (
         <div className="empty-collection">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/illustrations/empty-collection.png" alt={t("mascot.emptyCollection")} />
+          <PublicArt
+            src="/illustrations/empty-collection.png"
+            fallbackSrc="/illustrations/empty-collection.svg"
+            alt={t("mascot.emptyCollection")}
+          />
           <p className="muted">{t("teach.collectionEmpty")}</p>
         </div>
       ) : null}

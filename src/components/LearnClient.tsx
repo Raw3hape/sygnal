@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { CheckGlyph, LockGlyph, SkillGlyph } from "@/components/glyphs";
+import { PublicArt } from "@/components/PublicArt";
 import { lessonHas3d, lessonsFor } from "@/content/lessons";
 import { isUnlocked, pathNodeStatus, pathStatusLabelKey, skillsFor, type PathNodeStatus } from "@/content/skills";
 import { Link } from "@/i18n/navigation";
@@ -54,9 +55,9 @@ export function LearnClient() {
   return (
     <div className="stack-lg">
       <header className="learn-hero">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <PublicArt
           src="/illustrations/path-start.png"
+          fallbackSrc="/illustrations/path-start.svg"
           alt={t("mascot.pathStart")}
           className="path-start-art"
         />
