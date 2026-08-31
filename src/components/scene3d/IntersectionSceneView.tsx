@@ -20,6 +20,7 @@ interface IntersectionSceneViewProps {
   playingClip?: boolean;
   highlightId?: string;
   correctOrder?: string[];
+  actorLabel?: (id: string) => string;
 }
 
 function lightColor(state: LightState): string {
@@ -111,7 +112,8 @@ function ActorMesh({
       <Html position={[0, 1.1, 0]} center>
         <button
           type="button"
-          className="rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white"
+          className="rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white"
+          data-actor-id={actor.id}
           onClick={(event) => {
             event.stopPropagation();
             if (selectable) {
@@ -194,6 +196,7 @@ export function IntersectionSceneView({
   playingClip = false,
   highlightId,
   correctOrder,
+  actorLabel,
 }: IntersectionSceneViewProps) {
   const [clipT, setClipT] = useState(0);
   const pauseAt = scene.clip ? scene.clip.pauseAtMs / scene.clip.durationMs : 0.45;
@@ -235,6 +238,7 @@ export function IntersectionSceneView({
       ))}
       {scene.visualActors.map((actor) => {
         const rank = correctOrder?.indexOf(actor.id);
+        const label = actorLabel?.(actor.id) ?? actor.id;
         return (
           <ActorMesh
             key={actor.id}
@@ -245,7 +249,7 @@ export function IntersectionSceneView({
             highlight={highlightId === actor.id}
             onSelect={onSelectActor}
             hand="right"
-            orderLabel={rank !== undefined && rank >= 0 ? String(rank + 1) : actor.id}
+            orderLabel={rank !== undefined && rank >= 0 ? `${rank + 1} · ${label}` : label}
           />
         );
       })}
