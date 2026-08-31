@@ -121,7 +121,7 @@ function ActorMesh({
             }
           }}
         >
-          {orderLabel ?? actor.id}
+          {orderLabel ?? actor.kind}
         </button>
       </Html>
     </mesh>
@@ -238,7 +238,7 @@ export function IntersectionSceneView({
       ))}
       {scene.visualActors.map((actor) => {
         const rank = correctOrder?.indexOf(actor.id);
-        const label = actorLabel?.(actor.id) ?? actor.id;
+        const label = actorLabel?.(actor.id) ?? actor.kind;
         return (
           <ActorMesh
             key={actor.id}
