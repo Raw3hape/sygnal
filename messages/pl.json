@@ -3,7 +3,7 @@
   "tagline": "Prawdziwe przepisy. Prawdziwe znaki. Krótkie lekcje 3D.",
   "disclaimer": "Sygnal pomaga się uczyć. Nie zastępuje szkoły jazdy ani egzaminu państwowego.",
   "continue": "Dalej",
-  "startLesson": "Zacznij lekcje",
+  "startLesson": "Zacznij lekcję",
   "check": "Sprawdź",
   "next": "Następne",
   "finish": "Koniec",
@@ -50,6 +50,7 @@
   "goalMet": "Dzisiejsza lekcja zrobiona",
   "threeD": "3D",
   "crowns": "Korony",
+  "skillDone": "Zaliczone",
   "restartExam": "Spróbuj jeszcze raz",
   "missingLesson": "Tej lekcji nie ma w wybranym pakiecie kraju.",
   "jurisdictions": {
@@ -118,9 +119,17 @@
     "review": "Rozbiórka",
     "plateCode": "Tarcza",
     "languageVsRules": "Język to interfejs. Kraj to przepisy.",
-    "collectionEmpty": "Dokończ lekcje, żeby przypiąć tarcze.",
+    "collectionEmpty": "Dokończ lekcję, żeby przypiąć tarcze.",
     "lockedPath": "Zablokowane, aż skończysz poprzedni dział",
     "examReview": "Jak poszło punktowanie",
     "engineNote": "Scena 3D to obraz. Klucz odpowiedzi to silnik TypeScript."
+  },
+  "mascot": {
+    "idle": "Blink, ptak-sygnalizator, czeka na start",
+    "celebrate": "Blink, ptak-sygnalizator, świętuje",
+    "think": "Blink, ptak-sygnalizator, myśli",
+    "oops": "Blink, ptak-sygnalizator, po błędzie",
+    "pathStart": "Blink na starcie wijącej się ścieżki lekcji",
+    "emptyCollection": "Blink przy pustym słupku na znaki"
   }
 }

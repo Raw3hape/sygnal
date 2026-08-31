@@ -50,6 +50,7 @@
   "goalMet": "Today's lesson is done",
   "threeD": "3D",
   "crowns": "Crowns",
+  "skillDone": "Cleared",
   "restartExam": "Try again",
   "missingLesson": "This lesson is not in the selected country pack.",
   "jurisdictions": {
@@ -122,5 +123,13 @@
     "lockedPath": "Locked until the previous unit is done",
     "examReview": "How the scoring worked",
     "engineNote": "The 3D scene is a picture. The TypeScript rules engine is the answer key."
+  },
+  "mascot": {
+    "idle": "Blink the traffic-light bird, waiting to start",
+    "celebrate": "Blink the traffic-light bird, celebrating",
+    "think": "Blink the traffic-light bird, thinking",
+    "oops": "Blink the traffic-light bird, after a miss",
+    "pathStart": "Blink at the start of a winding lesson path",
+    "emptyCollection": "Blink beside an empty signpost"
   }
 }
