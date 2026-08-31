@@ -5,11 +5,13 @@ import { persist } from "zustand/middleware";
 import {
   bumpDrivingDays,
   defaultProgress,
+  namespaceLegacySkills,
+  skillProgressKey,
+  type AttentionMode,
   type ProgressState,
 } from "@/lib/progress";
 import type { QualityPreference } from "@/lib/quality";
 import type { JurisdictionId } from "@/engine/types";
-import type { AttentionMode } from "@/lib/progress";
 
 interface ProgressStore extends ProgressState {
   setJurisdiction: (id: JurisdictionId) => void;
@@ -38,14 +40,15 @@ export const useProgress = create<ProgressStore>()(
       addXp: (amount) => set((state) => ({ xp: state.xp + amount })),
       completeLesson: (skillId, lessonId, signIds) =>
         set((state) => {
-          const current = state.skills[skillId] ?? { completedLessonIds: [], crowns: 0 };
+          const key = skillProgressKey(state.jurisdictionId, skillId);
+          const current = state.skills[key] ?? { completedLessonIds: [], crowns: 0 };
           const completedLessonIds = current.completedLessonIds.includes(lessonId)
             ? current.completedLessonIds
             : [...current.completedLessonIds, lessonId];
           return {
             skills: {
               ...state.skills,
-              [skillId]: {
+              [key]: {
                 completedLessonIds,
                 crowns: Math.min(5, completedLessonIds.length),
               },
@@ -63,6 +66,19 @@ export const useProgress = create<ProgressStore>()(
       markPracticedToday: () =>
         set((state) => ({ drivingDays: bumpDrivingDays(state.drivingDays) })),
     }),
-    { name: "sygnal-progress" },
+    {
+      name: "sygnal-progress",
+      version: 1,
+      migrate: (persisted, version) => {
+        const state = persisted as ProgressState;
+        if (version >= 1) {
+          return state;
+        }
+        return {
+          ...state,
+          skills: namespaceLegacySkills(state.skills ?? {}, state.jurisdictionId ?? "PL"),
+        };
+      },
+    },
   ),
 );

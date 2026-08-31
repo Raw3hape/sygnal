@@ -102,3 +102,50 @@ export function bumpDrivingDays(days: DrivingDays, now = new Date()): DrivingDay
     paused: false,
   };
 }
+
+export function skillProgressKey(jurisdictionId: JurisdictionId, skillId: string): string {
+  return `${jurisdictionId}::${skillId}`;
+}
+
+export function namespaceLegacySkills(
+  skills: Record<string, SkillProgress>,
+  jurisdictionId: JurisdictionId,
+): Record<string, SkillProgress> {
+  const next: Record<string, SkillProgress> = {};
+  for (const [key, value] of Object.entries(skills)) {
+    next[key.includes("::") ? key : skillProgressKey(jurisdictionId, key)] = value;
+  }
+  return next;
+}
+
+export function skillProgressFor(
+  skills: Record<string, SkillProgress>,
+  jurisdictionId: JurisdictionId,
+  skillId: string,
+): SkillProgress | undefined {
+  return skills[skillProgressKey(jurisdictionId, skillId)] ?? skills[skillId];
+}
+
+export function completedSkillsFor(
+  skills: Record<string, SkillProgress>,
+  jurisdictionId: JurisdictionId,
+): Record<string, boolean> {
+  const prefix = `${jurisdictionId}::`;
+  const completed: Record<string, boolean> = {};
+  let namespaced = false;
+  for (const [key, value] of Object.entries(skills)) {
+    if (key.startsWith(prefix)) {
+      namespaced = true;
+      completed[key.slice(prefix.length)] = value.completedLessonIds.length > 0;
+    }
+  }
+  if (namespaced) {
+    return completed;
+  }
+  for (const [key, value] of Object.entries(skills)) {
+    if (!key.includes("::")) {
+      completed[key] = value.completedLessonIds.length > 0;
+    }
+  }
+  return completed;
+}

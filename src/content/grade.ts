@@ -13,6 +13,23 @@ function sameOrder(left: string[], right: string[]): boolean {
   return left.length === right.length && left.every((id, index) => id === right[index]);
 }
 
+export function hasLessonAnswer(item: LessonItem, answer: unknown): boolean {
+  switch (item.type) {
+    case "sign-meaning":
+    case "mcq":
+    case "clip-choice":
+      return typeof answer === "number";
+    case "true-false":
+      return typeof answer === "boolean";
+    case "hazard-tap":
+      return typeof answer === "string" && answer.length > 0;
+    case "who-goes-first":
+      return Array.isArray(answer) && answer.length > 0;
+    default:
+      return assertNever(item);
+  }
+}
+
 export function gradeItem(
   item: LessonItem,
   answer: unknown,

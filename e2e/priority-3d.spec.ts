@@ -23,12 +23,12 @@ test("who-goes-first 3D: yield to the right at uncontrolled junction", async ({ 
 
   await waitForCanvas(page);
 
-  const eastbound = await waitForOverlayButton(page, "eastbound");
-  const southbound = await waitForOverlayButton(page, "southbound");
+  const eastbound = await waitForOverlayButton(page, "East car");
+  const southbound = await waitForOverlayButton(page, "South car");
 
   await eastbound.click({ force: true });
   await southbound.click({ force: true });
-  await expect(page.getByText("eastbound → southbound")).toBeVisible();
+  await expect(page.getByText("East car → South car")).toBeVisible();
 
   await page.getByRole("button", { name: "Check" }).click();
 

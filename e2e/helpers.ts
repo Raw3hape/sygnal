@@ -22,7 +22,7 @@ export function persistPayload(seed: SeedProgress = {}): string {
       drivingDays: { count: 0, lastIsoDate: null, paused: false },
       onboardingComplete: seed.onboardingComplete ?? true,
     },
-    version: 0,
+    version: 1,
   });
 }
 
