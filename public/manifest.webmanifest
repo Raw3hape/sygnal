@@ -4,7 +4,7 @@
   "description": "3D micro-lessons for real driving rules",
   "start_url": "/en",
   "display": "standalone",
-  "background_color": "#f4efe6",
+  "background_color": "#f3f7f4",
   "theme_color": "#f5c400",
   "icons": [
     {

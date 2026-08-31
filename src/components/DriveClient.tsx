@@ -25,7 +25,7 @@ export function DriveClient() {
       </div>
       <button
         type="button"
-        className="btn-signal md:hidden"
+        className="btn-signal btn-hero md:hidden"
         onPointerDown={() => setHold(true)}
         onPointerUp={() => setHold(false)}
         onPointerCancel={() => setHold(false)}

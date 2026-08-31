@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Source_Sans_3, Source_Serif_4 } from "next/font/google";
+import type { ReactNode } from "react";
+import { Nunito, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
 const sans = Source_Sans_3({
@@ -7,9 +8,10 @@ const sans = Source_Sans_3({
   subsets: ["latin", "latin-ext", "cyrillic"],
 });
 
-const display = Source_Serif_4({
+const display = Nunito({
   variable: "--font-display",
   subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: ["700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${sans.variable} ${display.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>

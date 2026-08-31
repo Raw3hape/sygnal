@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { JURISDICTIONS } from "@/content/jurisdictions";
+import { Mascot } from "@/components/Mascot";
 import { Link } from "@/i18n/navigation";
 import { useProgress } from "@/lib/useProgress";
 
@@ -14,11 +15,12 @@ export function HomeClient() {
   if (!complete) {
     return (
       <div className="home-board">
+        <Mascot pose="idle" size="hero" alt={t("mascot.idle")} className="mascot-bob" />
         <p className="teach-kicker">{t("appName")}</p>
         <h1 className="display">{t("onboardingTitle")}</h1>
         <p className="lede">{t("onboardingBody")}</p>
         <p className="eyebrow">{t("language")}</p>
-        <div className="chip-row">
+        <div className="chip-row chip-row-center">
           <Link href="/" locale="en" className="chip">
             EN
           </Link>
@@ -50,11 +52,12 @@ export function HomeClient() {
 
   return (
     <div className="home-board">
+      <Mascot pose="idle" size="hero" alt={t("mascot.idle")} className="mascot-bob" />
       <p className="teach-kicker">{t(`jurisdictions.${jurisdictionId}`)}</p>
       <h1 className="display">{t("appName")}</h1>
       <p className="lede">{t("tagline")}</p>
       <div className="home-actions">
-        <Link href="/learn" className="btn-signal">
+        <Link href="/learn" className="btn-signal btn-hero">
           {t("learn")}
         </Link>
         <Link href="/hub" className="btn-ink">
