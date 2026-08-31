@@ -24,3 +24,10 @@ Vienna-family packs may reuse a Polish or GOST official diagram when a jurisdict
 As of 2026-08-31 the only catalog ids without a numeral-accurate Commons SVG are US MUTCD speed limits **R2-1-30 / 35 / 40 / 45 / 55 / 65**. Commons publishes a generic `MUTCD R2-1.svg` (25 mph template) and a 50 mph plate; those two are used. The other speeds use the MUTCD vertical-rectangle geometry in `svg.ts` with the correct number, labeled `artwork: "fallback"` in the catalog.
 
 Re-fetch: `node scripts/fetch-official-signs.mjs`.
+
+## Related
+
+- Agent map: [`AGENTS.md`](./AGENTS.md)
+- Architecture: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
+- Catalog loader: `src/content/signs/artwork.ts` (`resolveArtwork`)
+- 2D/3D plates: `src/components/SignSvg.tsx`, `src/components/scene3d/SignBillboard.tsx` (both use `sign.src` → `/signs/{jurisdiction}/{code}.svg`)

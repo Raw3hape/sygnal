@@ -1,32 +1,41 @@
 # Sygnal
 
-Browser PWA for interactive driving-rules training. Micro-lessons (about 90 seconds to 4 minutes), real signs, and 3D freeze-frame scenes. Not an open-world driving simulator.
+Browser PWA for interactive driving-rules training: short micro-lessons, official-style sign plates, and freeze-frame 3D junctions. It is not an open-world driving simulator.
 
-Language (`en` / `pl` / `ru`) is separate from jurisdiction (`PL`, `DE`, `US-CA`, `RU`, `UA`). A Russian UI on a California road still shows STOP.
+**Locale is not jurisdiction.** UI language (`en` / `pl` / `ru` in the URL) is independent of the road pack (`PL`, `DE`, `US-CA`, `RU`, `UA` in client state). A Russian UI on a California pack still shows MUTCD STOP.
+
+Sygnal is a training aid. It does not replace a driving school or an official exam.
 
 ## Stack
 
-Next.js App Router, next-intl, React Three Fiber, Zustand, ts-fsrs, Vitest.
+Next.js 16 App Router, next-intl, React Three Fiber, Zustand, ts-fsrs, Vitest, Playwright.
 
-The right-of-way engine (`whoGoesFirst`) is pure TypeScript with tests. 3D only visualizes it.
+Right-of-way answers come from TypeScript (`src/engine/whoGoesFirst.ts`), not from the 3D scene. 3D only visualizes scenes.
+
+Agents: start at [`AGENTS.md`](./AGENTS.md). Architecture: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Tests: [`docs/TESTING.md`](./docs/TESTING.md). Sign licenses: [`ATTRIBUTION.md`](./ATTRIBUTION.md).
 
 ## Scripts
 
 ```bash
-npm run dev
-npm test
-npm run test:e2e
-npm run test:e2e:visual
+npm install
+npm run dev          # http://localhost:3000 — open /en, /pl, or /ru
+npm test             # Vitest (engine + content)
 npm run build
-npm start
+npm start            # production server Playwright uses
+npm run test:e2e     # Playwright (needs a prior build; see docs/TESTING.md)
+npm run lint
 ```
 
-Playwright talks to `http://127.0.0.1:3000` (`next start`). Visual baselines live in `e2e/visual.spec.ts-snapshots/`; 3D canvases are masked so WebGL noise is ignored. Update them with `npm run test:e2e:update`.
+## Official sign plates
 
-Open `/en`, `/pl`, or `/ru`. Add to Home Screen uses `public/manifest.webmanifest`.
+Do not draw or generate sign artwork. Fetch Commons / MUTCD SVGs:
 
-## ADHD-first
+```bash
+node scripts/fetch-official-signs.mjs
+```
 
-Focus mode is the default: low 3D quality, reduced motion. No hearts. “Days at the wheel” can be paused without a penalty. Exam timers are not on the main path.
+Files land in `public/signs/{PL,DE,US-CA,RU,UA}/`. Per-file license and source URL: `src/content/signs/artwork-manifest.json`. Legal summary: [`ATTRIBUTION.md`](./ATTRIBUTION.md). Geometric fallbacks (shape family only) live in `src/content/signs/svg.ts` and are labeled `artwork: "fallback"`.
 
-Sygnal is a training aid. It does not replace a driving school or an official exam.
+## PWA
+
+`public/manifest.webmanifest` (`start_url`: `/en`, `display`: `standalone`). Icon: `public/icon.svg`. Add to Home Screen from the browser; there is no native wrapper.
