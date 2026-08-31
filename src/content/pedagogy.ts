@@ -99,7 +99,7 @@ const REASON_LONG: Record<string, LocalizedName> = {
   ),
   fourWayStop: L(
     "All-way STOP: the first vehicle to arrive goes first; if they arrived together, yield to the right.",
-    "STOP ze wszystkich stron: kto pierwszy dojechał, ten jedzie; przyremisie — ustąp z prawej.",
+    "STOP ze wszystkich stron: kto pierwszy dojechał, ten jedzie; przy remisie — ustąp z prawej.",
     "STOP со всех сторон: кто раньше подъехал, тот едет; при ничьей — уступите справа.",
   ),
   yieldToRight: L(
