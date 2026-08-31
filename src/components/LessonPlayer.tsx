@@ -302,6 +302,9 @@ export function LessonPlayer({ lesson, locale }: LessonPlayerProps) {
           className="btn-signal btn-hero"
           disabled={feedback === null && !hasLessonAnswer(item, answer)}
           onClick={() => {
+            if (feedback === null && !hasLessonAnswer(item, answer)) {
+              return;
+            }
             const result = gradeItem(item, answer, lesson.jurisdiction);
             if (feedback === null) {
               setFeedback(result.correct);
