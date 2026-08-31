@@ -1,20 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { shouldHideAppChrome } from "./chrome";
+import { shouldHideTabbar, shouldHideTopbar } from "./chrome";
 
-describe("shouldHideAppChrome", () => {
+describe("app chrome visibility", () => {
   it("hides XP, topbar, and tab bar until a jurisdiction is chosen", () => {
-    expect(shouldHideAppChrome(false, "/")).toBe(true);
-    expect(shouldHideAppChrome(false, "/learn")).toBe(true);
+    expect(shouldHideTopbar(false)).toBe(true);
+    expect(shouldHideTabbar(false, "/")).toBe(true);
+    expect(shouldHideTabbar(false, "/learn")).toBe(true);
   });
 
-  it("hides chrome on lesson and exam after onboarding", () => {
-    expect(shouldHideAppChrome(true, "/lesson/PL-warning-signs-0")).toBe(true);
-    expect(shouldHideAppChrome(true, "/exam")).toBe(true);
+  it("hides the tab bar on lesson and exam after onboarding", () => {
+    expect(shouldHideTabbar(true, "/lesson/PL-warning-signs-0")).toBe(true);
+    expect(shouldHideTabbar(true, "/exam")).toBe(true);
+    expect(shouldHideTopbar(true)).toBe(false);
   });
 
   it("shows chrome on the home hub after onboarding", () => {
-    expect(shouldHideAppChrome(true, "/")).toBe(false);
-    expect(shouldHideAppChrome(true, "/learn")).toBe(false);
-    expect(shouldHideAppChrome(true, "/settings")).toBe(false);
+    expect(shouldHideTopbar(true)).toBe(false);
+    expect(shouldHideTabbar(true, "/")).toBe(false);
+    expect(shouldHideTabbar(true, "/learn")).toBe(false);
+    expect(shouldHideTabbar(true, "/settings")).toBe(false);
   });
 });

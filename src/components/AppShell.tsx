@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { NavIcon, type NavKey } from "@/components/glyphs";
 import { useEffect, useMemo, type ReactNode } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { shouldHideAppChrome } from "@/lib/chrome";
+import { shouldHideTabbar, shouldHideTopbar } from "@/lib/chrome";
 import { levelFromXp } from "@/lib/xp";
 import { useProgress } from "@/lib/useProgress";
 
@@ -31,7 +31,8 @@ export function AppShell({ children, locale }: AppShellProps) {
   const onboarded = useProgress((state) => state.onboardingComplete);
   const level = levelFromXp(xp);
   const play = mode === "play";
-  const hideChrome = shouldHideAppChrome(onboarded, pathname);
+  const hideTopbar = shouldHideTopbar(onboarded);
+  const hideTabbar = shouldHideTabbar(onboarded, pathname);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -58,8 +59,8 @@ export function AppShell({ children, locale }: AppShellProps) {
   ];
 
   return (
-    <div className={`${play ? "theme-play" : "theme-focus"} ${mode === "focus" ? "sygnal-focus" : ""} shell ${hideChrome ? "shell-immersive" : ""}`}>
-      {hideChrome ? null : (
+    <div className={`${play ? "theme-play" : "theme-focus"} ${mode === "focus" ? "sygnal-focus" : ""} shell ${hideTabbar ? "shell-immersive" : ""}`}>
+      {hideTopbar ? null : (
         <header className="topbar">
           <div className="topbar-inner">
             <Link href="/" className="wordmark">
@@ -95,14 +96,14 @@ export function AppShell({ children, locale }: AppShellProps) {
               {item.label}
             </Link>
           ))}
-          {hideChrome ? null : (
+          {hideTopbar ? null : (
             <button type="button" className="chip" onClick={togglePause}>
               {days.paused ? t("resumeDays") : t("pauseDays")}
             </button>
           )}
         </div>
       </footer>
-      {hideChrome ? null : (
+      {hideTabbar ? null : (
         <nav className="tabbar">
           <div className="tabbar-inner">
             {nav.map((item) => (

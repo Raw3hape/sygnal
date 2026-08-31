@@ -1,4 +1,8 @@
-export function shouldHideAppChrome(onboardingComplete: boolean, pathname: string): boolean {
+export function shouldHideTopbar(onboardingComplete: boolean): boolean {
+  return !onboardingComplete;
+}
+
+export function shouldHideTabbar(onboardingComplete: boolean, pathname: string): boolean {
   if (!onboardingComplete) {
     return true;
   }
